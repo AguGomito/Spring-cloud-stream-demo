@@ -11,32 +11,36 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoanChecker {
 
-  public static final Logger log = LoggerFactory.getLogger(LoanChecker.class);
-  private static final Long MAX_AMOUNT = 10000L;
-  private LoanProcessor processor;
+    public static final Logger log = LoggerFactory.getLogger(LoanChecker.class);
+    private static final Long MAX_AMOUNT = 10000L;
+    private LoanProcessor processor;
 
-  @Autowired
-  public LoanChecker(LoanProcessor processor) {
-    this.processor = processor;
-  }
-
-  @StreamListener(LoanProcessor.APPLICATIONS_IN)
-  public void checkAndSortLoans(Loan loan) {
-    log.info("{} {} for ${} for {}", loan.getStatus(), loan.getUuid(), loan.getAmount(), loan.getName());
-
-    if (loan.getAmount() > MAX_AMOUNT) {
-      loan.setStatus(Statuses.DECLINED.name());
-      processor.declined().send(message(loan));
-    } else {
-      loan.setStatus(Statuses.APPROVED.name());
-      processor.approved().send(message(loan));
+    @Autowired
+    public LoanChecker(LoanProcessor processor) {
+        this.processor = processor;
     }
 
-    log.info("{} {} for ${} for {}", loan.getStatus(), loan.getUuid(), loan.getAmount(), loan.getName());
+    @StreamListener(LoanProcessor.APPLICATIONS_IN)
+    public void checkAndSortLoans(Loan loan) {
+        log.info("\n ----------- Loan Check n^ {} ----------------" +
+                        "\n ------------------- {} => {} : ${} ------------------- \n\n", loan.getUuid(),
+                loan.getStatus(), loan.getName(), loan.getAmount());
 
-  }
+        if (loan.getAmount() > MAX_AMOUNT) {
+            loan.setStatus(Statuses.DECLINED.name());
+            processor.declined().send(message(loan));
+        } else {
+            loan.setStatus(Statuses.APPROVED.name());
+            processor.approved().send(message(loan));
+        }
 
-  private static final <T> Message<T> message(T val) {
-    return MessageBuilder.withPayload(val).build();
-  }
+        log.info("\n ----------- Loan Sort n^ {} ----------------" +
+                        "\n ------------------- {} => {} : ${} ------------------- \n\n", loan.getUuid(),
+                loan.getStatus(), loan.getName(), loan.getAmount());
+
+    }
+
+    private static final <T> Message<T> message(T val) {
+        return MessageBuilder.withPayload(val).build();
+    }
 }

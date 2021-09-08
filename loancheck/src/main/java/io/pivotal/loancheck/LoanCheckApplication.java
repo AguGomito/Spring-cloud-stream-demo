@@ -10,10 +10,10 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 @EnableBinding(LoanProcessor.class)
 public class LoanCheckApplication {
 
-  public static final Logger log = LoggerFactory.getLogger(LoanCheckApplication.class);
+    public static final Logger log = LoggerFactory.getLogger(LoanCheckApplication.class);
 
-  public static void main(String[] args) {
-    SpringApplication.run(LoanCheckApplication.class, args);
-    log.info("The Loancheck Application has started...");
-  }
+    public static void main(String[] args) {
+        SpringApplication.run(LoanCheckApplication.class, args);
+        log.info("The Loancheck Application has started...");
+    }
 }

@@ -10,7 +10,7 @@ public class LoansourceApplicationTest {
 
   @Test
   public void supplyLoan() {
-    LoansourceApplication app = new LoansourceApplication();
+    LoanSource app = new LoanSource();
     Supplier<Loan> loan = app.supplyLoan();
     assertNotNull(loan);
     assertNotNull(loan.get());
